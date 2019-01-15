@@ -1,0 +1,14 @@
+name: example
+author: Aloïs Deniel <alois.deniel@outlook.com>
+
+environment:
+  sdk: '>=2.0.0 <3.0.0'
+
+dependencies:
+  built_bloc: 
+    path: ../built_bloc 
+
+dev_dependencies:
+  build_runner: ^1.0.0
+  built_bloc_generator:
+    path: ../built_bloc_generator

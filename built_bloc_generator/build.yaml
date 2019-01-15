@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      built_bloc_generator|built_bloc:
+        enabled: true
+
+builders:
+  built_bloc_generator:
+    target: ":built_bloc_generator"
+    import: "package:built_bloc_generator/builder.dart"
+    builder_factories: ["built_bloc"]
+    build_extensions: {".dart": [".built_bloc.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]
