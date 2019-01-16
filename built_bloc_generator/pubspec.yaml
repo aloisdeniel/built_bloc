@@ -1,5 +1,5 @@
 name: built_bloc_generator
-version: 0.1.0-dev
+version: 0.1.1-dev
 author: Aloïs Deniel <alois.deniel@outlook.com>
 description: Generates the BLoC boilerplate.
 homepage: https://github.com/aloisdeniel/built_bloc
@@ -13,7 +13,7 @@ dependencies:
   code_builder: ^3.1.3
   dart_style: ^1.2.2
   rxdart: ^0.20.0
-  built_bloc: ^0.1.0-dev
+  built_bloc: ^0.1.1-dev
     #path: ../built_bloc
   meta: ^1.1.0
   path: ^1.3.2 

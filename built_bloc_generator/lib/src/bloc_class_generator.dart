@@ -1,8 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:built_bloc_generator/src/helpers.dart';
-import 'package:built_bloc_generator/src/sink_generator.dart';
-import 'package:built_bloc_generator/src/stream_generator.dart';
+import 'package:built_bloc_generator/src/subject_generator.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
@@ -13,13 +12,11 @@ class BlocClassGenerator {
   final ClassElement element;
   final ConstantReader annotation;
   final BuildStep buildStep;
-  final List<SinkGenerator> sinks;
-  final List<StreamGenerator> streams;
+  final List<SubjectGenerator> subjects;
 
   BlocClassGenerator(this.element, this.annotation, this.buildStep)
       : this.publicName = _generateBlocName(element.name),
-        this.sinks = SinkGenerator.find(element),
-        this.streams = StreamGenerator.find(element);
+        this.subjects = SubjectGenerator.find(element);
 
   static String _generateBlocName(String name) {
     if (name.startsWith("_")) {
@@ -52,8 +49,7 @@ class BlocClassGenerator {
       ..name = "_internal"
       ..type = refer(this.privateName)
       ..modifier = FieldModifier.final$));
-    this.sinks.forEach((s) => s.generatePublic(builder));
-    this.streams.forEach((s) => s.generatePublic(builder));
+    this.subjects.forEach((s) => s.generatePublic(builder));
 
     _addConstructorParameters(constructor);
     constructor.initializers
@@ -78,9 +74,7 @@ class BlocClassGenerator {
 
     final constructor = ConstructorBuilder();
     final constructorBody = BlockBuilder();
-    this.sinks.forEach(
-        (s) => s.generatePrivate(constructor, constructorBody, builder));
-    this.streams.forEach(
+    this.subjects.forEach(
         (s) => s.generatePrivate(constructor, constructorBody, builder));
     constructor.body = constructorBody.build();
 

@@ -11,5 +11,16 @@ List<AnnotatedElement> findAnnotation(Element element, Type annotation) {
 }
 
 Reference referFromAnalyzer(DartType type) {
-  return refer(type.name, type.element.librarySource.uri.toString());
+  return refer(type.name, type.element?.librarySource?.uri?.toString());
+}
+
+DartType extractBoundType(DartType type) {
+  DartType bound = null;
+
+  if (type is ParameterizedType) {
+    if (type.typeArguments.isNotEmpty) {
+      bound = type.typeArguments.first;
+    }
+  }
+  return bound;
 }
