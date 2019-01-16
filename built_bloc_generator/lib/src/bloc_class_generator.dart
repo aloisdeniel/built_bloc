@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
+import 'package:built_bloc/built_bloc.dart';
 import 'package:built_bloc_generator/src/helpers.dart';
 import 'package:built_bloc_generator/src/subject_generator.dart';
 import 'package:code_builder/code_builder.dart';

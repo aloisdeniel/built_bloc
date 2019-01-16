@@ -6,7 +6,7 @@ Generate the BLoC pattern boilerplate.
 
 In order to generate your bloc, you first have to declare a private class that should extends `Bloc` and be annotated with `@bloc`.
 
-Then declare getters that describe and register your subjects (from rxdart). Several helpers are available in the `Bloc` class, like `behavior` and `publish` shorcuts.
+Then declare getters that describe and register your subjects (from rxdart). Several helpers are available in the `Bloc` class, like `addBehavior` and `addPublish` shorcuts.
 
 ```dart
 import 'package:rxdart/rxdart.dart';
@@ -19,10 +19,10 @@ class _ExampleBloc extends Bloc {
   _ExampleBloc();
 
   @stream
-  BehaviorSubject<int> get count => behavior(0);
+  BehaviorSubject<int> get count => addBehavior(0);
 
   @sink
-  PublishSubject<int> get add => publish(onData: (int value) {
+  PublishSubject<int> get add => addPublish(onData: (int value) {
     this.count.add(this.count.value);
   });
 }

@@ -22,11 +22,13 @@ class Bloc {
     return subject;
   }
 
-  PublishSubject<T> publish<T>({void onData(T newValue), Function onError, void onDone(), bool cancelOnError}) {
+  @protected
+  PublishSubject<T> addPublish<T>({void onData(T newValue), Function onError, void onDone(), bool cancelOnError}) {
     return this.subject(PublishSubject<T>(sync: true), onData: onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
-  BehaviorSubject<T> behavior<T>(T seedValue, {void onData(T newValue), Function onError, void onDone(), bool cancelOnError}) {
+  @protected
+  BehaviorSubject<T> addBehavior<T>(T seedValue, {void onData(T newValue), Function onError, void onDone(), bool cancelOnError}) {
     return this.subject(BehaviorSubject<T>(sync: true, seedValue: seedValue), onData: onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 

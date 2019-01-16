@@ -17,6 +17,8 @@ class SubjectGenerator {
 
   final String streamType;
 
+  final bool isDirect;
+
   final bool isSink;
 
   final bool isStream;
@@ -24,53 +26,56 @@ class SubjectGenerator {
   SubjectGenerator(PropertyAccessorElement method, DartType argumentType,
       {this.isSink, this.isStream})
       : this.name = method.name,
+        this.isDirect = isExactlyRuntime(method.returnType, Stream) || isExactlyRuntime(method.returnType, Sink),
         this.subjectName = "_${method.name}Subject",
         this.argumentType = argumentType != null
             ? referFromAnalyzer(argumentType)
             : refer("void"),
-        this.subjectType = method.returnType.name,
-        this.streamType =
-            "Stream<${argumentType?.name ?? "void"}>",
-        this.sinkType =
-            "Sink<${argumentType?.name ?? "void"}>";
+        this.subjectType = method.returnType.name + "<${argumentType?.name ?? "void"}>",
+        this.streamType = "Stream<${argumentType?.name ?? "void"}>",
+        this.sinkType = "Sink<${argumentType?.name ?? "void"}>";
 
   void generatePrivate(
     ConstructorBuilder privateConstructor,
     BlockBuilder privateConstructorBody,
     ClassBuilder private,
   ) {
-    private.methods.add(Method((b) => b
-      ..name = this.name
-      ..annotations.add(CodeExpression(Code("override")))
-      ..type = MethodType.getter
-      ..body = Block((b) => b
-        ..statements.addAll([
-          Code(
-              "if(this.$subjectName == null) { this.$subjectName = super.$name; } "),
-          Code("return this.$subjectName;")
-        ]))));
+    if(!this.isDirect) {
+      private.methods.add(Method((b) => b
+        ..name = this.name
+        ..annotations.add(CodeExpression(Code("override")))
+        ..type = MethodType.getter
+        ..lambda = true
+        ..body = Code("this.$subjectName")));
 
-    private.fields.add(Field((b) => b
-      ..name = this.subjectName
-      ..type = refer(this.subjectType)));
+      privateConstructorBody.statements
+          .add(Code("this.$subjectName = super.$name;"));
+
+      private.fields.add(Field((b) => b
+        ..name = this.subjectName
+        ..type = refer(this.subjectType)));
+    }
   }
 
   void generatePublic(ClassBuilder public) {
-    if (this.isSink) {
-      public.methods.add(Method((b) => b
-        ..name = this.name
-        ..lambda = true
-        ..returns = refer(this.sinkType)
-        ..body = Code("this._internal.$name.sink")
-        ..type = MethodType.getter));
-    } else if (this.isStream) {
-      public.methods.add(Method((b) => b
-        ..name = this.name
-        ..lambda = true
-        ..returns = refer(this.streamType)
-        ..body = Code("this._internal.$name.stream")
-        ..type = MethodType.getter));
+    final builder = MethodBuilder()
+    ..name = this.name
+    ..lambda = true
+    ..type = MethodType.getter
+    ..returns = this.isSink ? refer(this.sinkType) : refer(this.streamType);
+    if(this.isDirect) {
+      builder
+        ..body = Code("this._internal.$name");
     }
+    else if (this.isSink) {
+      builder
+        ..body = Code("this._internal.$name.sink");
+    } else if (this.isStream) {
+      builder
+        ..body = Code("this._internal.$name.stream");
+    }
+
+    public.methods.add(builder.build());
   }
 
   static List<SubjectGenerator> find(ClassElement element) {
@@ -78,7 +83,7 @@ class SubjectGenerator {
       final sinkAnnotations = findAnnotation(m, BlocSink);
       final streamAnnotations = findAnnotation(m, BlocStream);
 
-      if(sinkAnnotations.isEmpty && streamAnnotations.isEmpty) {
+      if (sinkAnnotations.isEmpty && streamAnnotations.isEmpty) {
         return null;
       }
 

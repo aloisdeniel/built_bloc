@@ -24,3 +24,8 @@ DartType extractBoundType(DartType type) {
   }
   return bound;
 }
+
+bool isExactlyRuntime(DartType t, Type runtimeType) {
+  final streamType = TypeChecker.fromRuntime(runtimeType);
+  return  streamType.isExactlyType(t);
+}

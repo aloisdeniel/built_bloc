@@ -7,37 +7,24 @@ part of 'example.dart';
 // **************************************************************************
 
 class _$ExampleBloc extends _ExampleBloc {
-  _$ExampleBloc() : super() {}
-
-  BehaviorSubject _countSubject;
-
-  PublishSubject _addSubject;
-
-  PublishSubject _resetSubject;
-
-  @override
-  get count {
-    if (this._countSubject == null) {
-      this._countSubject = super.count;
-    }
-    return this._countSubject;
+  _$ExampleBloc() : super() {
+    this._countSubject = super.count;
+    this._addSubject = super.add;
+    this._resetSubject = super.reset;
   }
 
-  @override
-  get add {
-    if (this._addSubject == null) {
-      this._addSubject = super.add;
-    }
-    return this._addSubject;
-  }
+  BehaviorSubject<int> _countSubject;
+
+  PublishSubject<int> _addSubject;
+
+  PublishSubject<void> _resetSubject;
 
   @override
-  get reset {
-    if (this._resetSubject == null) {
-      this._resetSubject = super.reset;
-    }
-    return this._resetSubject;
-  }
+  get count => this._countSubject;
+  @override
+  get add => this._addSubject;
+  @override
+  get reset => this._resetSubject;
 }
 
 class ExampleBloc extends Bloc {
@@ -45,6 +32,7 @@ class ExampleBloc extends Bloc {
 
   final _$ExampleBloc _internal;
 
+  Stream<dynamic> get direct => this._internal.direct;
   Stream<int> get count => this._internal.count.stream;
   Sink<int> get add => this._internal.add.sink;
   Sink<void> get reset => this._internal.reset.sink;
