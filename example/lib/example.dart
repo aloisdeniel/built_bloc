@@ -8,18 +8,18 @@ abstract class _ExampleBloc extends Bloc {
   _ExampleBloc();
 
   @stream
-  Stream get direct => null;
+  Stream get direct => fromStream(null);
 
   @stream
-  BehaviorSubject<int> get count => addBehavior(0);
+  BehaviorSubject<int> get count => fromBehavior(0);
 
   @sink
-  PublishSubject<int> get add => addPublish(onData: (value) {
+  PublishSubject<int> get add => fromPublish(onData: (value) {
     this.count.add(this.count.value + value);
   });
 
   @sink
-  PublishSubject<void> get reset => addPublish(onData: (_) {
+  PublishSubject<void> get reset => fromPublish(onData: (_) {
     this.count.add(0);
   });
 }

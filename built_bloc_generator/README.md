@@ -1,10 +1,12 @@
-# built_bloc (in active development)
+# built_bloc
 
 Generate the BLoC pattern boilerplate.
 
 ## Quickstart
 
-Declare a new bloc by annotating a private class with `@bloc`. Each property can then be declared as a `@stream` or `@sink` to generate all the associated boilerplate code.
+In order to generate your bloc, you first have to declare a private class that should extends `Bloc` and be annotated with `@bloc`.
+
+Then declare getters (annotated with `@stream` or `@sink`) that describe your subjects (from [rxdart](https://github.com/ReactiveX/rxdart)). Several helpers are available in the `Bloc` class, like `fromBehavior` and `fromPublish` shorcuts.
 
 ```dart
 import 'package:rxdart/rxdart.dart';
@@ -13,84 +15,30 @@ import 'package:built_bloc/built_bloc.dart';
 part 'example.g.dart';
 
 @bloc
-abstract class _ExampleBloc extends Bloc {
+class _ExampleBloc extends Bloc {
   _ExampleBloc();
 
   @stream
-  final BehaviorSubject<int> count2 = BehaviorSubject<int>(sync: true, seedValue: 0);
-
-  @stream
-  int count = 0;
+  BehaviorSubject<int> get count => fromBehavior(0);
 
   @sink
-  void add(int value) {
-    print("Add: $value");
-    this.count += value;
-  }
-
-  @sink
-  void reset() {
-    this.count = 0;
-  }
+  PublishSubject<int> get add => fromPublish(onData: (int value) {
+    this.count.add(this.count.value);
+  });
 }
 ```
 
 This `_ExampleBloc` class will generate an `ExampleBloc` class that can be later used like a typical bloc.
 
-It is responsible for :
-
-* Exposing `Sinks` and `Steams` for each annotated elements
-* Disposing underlying subjects and subscriptions declared this way
-
-Here is the current result :
-
 ```dart
-// GENERATED CODE - DO NOT MODIFY BY HAND
+final myBloc = ExampleBloc();
 
-part of 'example.dart';
+myBloc.count.listen((v) {
+    print("count: $v");
+})
 
-// **************************************************************************
-// BlocGenerator
-// **************************************************************************
+myBloc.add.add(42);
 
-class _$ExampleBloc extends _ExampleBloc {
-  _$ExampleBloc() : super() {
-    this.subscribeSubject(this._addSubject, onData: this.add);
-    this.subscribeSubject(this._resetSubject, onData: (_) => this.reset());
-    this.subscribeSubject(this.count2);
-    this.subscribeSubject(this._countSubject);
-  }
-
-  final PublishSubject<int> _addSubject = PublishSubject<int>(sync: true);
-
-  final PublishSubject<void> _resetSubject = PublishSubject<void>(sync: true);
-
-  final BehaviorSubject<int> _countSubject = BehaviorSubject<int>(
-    sync: true,
-    seedValue: 0,
-  );
-
-  @override
-  int get count => _countSubject.value;
-  @override
-  set count(int newValue) => _countSubject.add(newValue);
-}
-
-class ExampleBloc extends Bloc {
-  ExampleBloc() : this._internal = _$ExampleBloc();
-
-  final _$ExampleBloc _internal;
-
-  Sink<int> get add => this._internal._addSubject.sink;
-  Sink<void> get reset => this._internal._resetSubject.sink;
-  Stream<int> get count2 => this._internal.count2.stream;
-  Stream<int> get count => this._internal._countSubject.stream;
-  @override
-  dispose() {
-    super.dispose();
-    this._internal.dispose();
-  }
-}
 ```
 
 ## How to use

@@ -2,103 +2,60 @@
 
 Generate the BLoC pattern boilerplate.
 
-## Quickstart
+## Why ?
 
-In order to generate your bloc, you first have to declare a private class that should extends `Bloc` and be annotated with `@bloc`.
+After using the [BLoC pattern](https://medium.com/flutter-io/build-reactive-mobile-apps-in-flutter-companion-article-13950959e381) a little, it seems pretty cool for sharing code and separation of concerns, but I quickly found myself to write a **lot of repetitive boilerplate code** : I felt the need for generator to assist me.
 
-Then declare getters that describe and register your subjects (from rxdart). Several helpers are available in the `Bloc` class, like `addBehavior` and `addPublish` shorcuts.
+Here is a simple vanilla bloc example which obviously highlights repeated patterns while declaring subjects, streams, sinks and subscriptions.
 
 ```dart
-import 'package:rxdart/rxdart.dart';
-import 'package:built_bloc/built_bloc.dart';
+class VanillaExampleBloc {
 
-part 'example.g.dart';
+  Sink<int> get add => this._add.sink;
 
+  Stream<int> get count => this._add.stream;
+
+  final PublishSubject<int> _add = PublishSubject<int>(sync: true);
+
+  final BehaviorSubject<int> _count = BehaviorSubject<int>(sync: true, seedValue: 0);
+
+  List<StreamSubscription> subscriptions;
+
+  List<Subject> subjects;
+
+  VanillaExampleBloc() {
+    subscriptions = [
+      this._add.listen(_onAdd),
+    ];
+    subjects = [
+      this._add,
+      this._count,
+    ];
+  }
+
+  void _onAdd(int value) {
+    this._count.add(this._count.value + 1);
+  }
+
+  @mustCallSuper
+  void dispose() {
+    this.subjects.forEach((s) => s.close());
+    this.subscriptions.forEach((s) => s.cancel());
+  }
+}
+```
+
+With **built_bloc**, you can replace all of that with just a few lines of code :
+
+```dart
 @bloc
-class _ExampleBloc extends Bloc {
-  _ExampleBloc();
+class _GeneratedExampleBloc extends Bloc {
+  @sink
+  PublishSubject<int> get add => fromPublish(onData: (int value) {
+        this.count.add(this.count.value + 1);
+      });
 
   @stream
-  BehaviorSubject<int> get count => addBehavior(0);
-
-  @sink
-  PublishSubject<int> get add => addPublish(onData: (int value) {
-    this.count.add(this.count.value);
-  });
+  BehaviorSubject<int> get count => fromBehavior(0);
 }
-```
-
-This `_ExampleBloc` class will generate an `ExampleBloc` class that can be later used like a typical bloc.
-
-Here is the current result :
-
-```dart
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
-part of 'example.dart';
-
-// **************************************************************************
-// BlocGenerator
-// **************************************************************************
-
-class _$ExampleBloc extends _ExampleBloc {
-  _$ExampleBloc() : super() {}
-
-  BehaviorSubject _countSubject;
-
-  PublishSubject _addSubject;
-
-  @override
-  get count {
-    if (this._countSubject == null) {
-      this._countSubject = super.count;
-    }
-    return this._countSubject;
-  }
-
-  @override
-  get add {
-    if (this._addSubject == null) {
-      this._addSubject = super.add;
-    }
-    return this._addSubject;
-  }
-}
-
-class ExampleBloc extends Bloc {
-  ExampleBloc() : this._internal = _$ExampleBloc();
-
-  final _$ExampleBloc _internal;
-
-  Stream<int> get count => this._internal.count.stream;
-  Sink<int> get add => this._internal.add.sink;
-  @override
-  dispose() {
-    super.dispose();
-    this._internal.dispose();
-  }
-}
-```
-
-## How to use
-
-### Install
-
-There are a few separate packages you need to install:
-
-```yaml
-dependencies:
-  built_bloc:
-
-dev_dependencies:
-  built_bloc_generator: 
-  build_runner: 
-```
-
-### Run the generator
-
-To run the generator, you must use `build_runner` cli:
-
-```sh
-flutter pub pub run build_runner watch
 ```

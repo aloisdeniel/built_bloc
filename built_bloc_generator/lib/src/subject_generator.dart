@@ -26,12 +26,14 @@ class SubjectGenerator {
   SubjectGenerator(PropertyAccessorElement method, DartType argumentType,
       {this.isSink, this.isStream})
       : this.name = method.name,
-        this.isDirect = isExactlyRuntime(method.returnType, Stream) || isExactlyRuntime(method.returnType, Sink),
+        this.isDirect = isExactlyRuntime(method.returnType, Stream) ||
+            isExactlyRuntime(method.returnType, Sink),
         this.subjectName = "_${method.name}Subject",
         this.argumentType = argumentType != null
             ? referFromAnalyzer(argumentType)
             : refer("void"),
-        this.subjectType = method.returnType.name + "<${argumentType?.name ?? "void"}>",
+        this.subjectType =
+            method.returnType.name + "<${argumentType?.name ?? "void"}>",
         this.streamType = "Stream<${argumentType?.name ?? "void"}>",
         this.sinkType = "Sink<${argumentType?.name ?? "void"}>";
 
@@ -40,7 +42,7 @@ class SubjectGenerator {
     BlockBuilder privateConstructorBody,
     ClassBuilder private,
   ) {
-    if(!this.isDirect) {
+    if (!this.isDirect) {
       private.methods.add(Method((b) => b
         ..name = this.name
         ..annotations.add(CodeExpression(Code("override")))
@@ -48,8 +50,10 @@ class SubjectGenerator {
         ..lambda = true
         ..body = Code("this.$subjectName")));
 
-      privateConstructorBody.statements
-          .add(Code("this.$subjectName = super.$name;"));
+      privateConstructorBody.statements.addAll([
+        Code("this.$subjectName = super.$name;"),
+        Code("this.subjects.add(this.$subjectName);"),
+      ]);
 
       private.fields.add(Field((b) => b
         ..name = this.subjectName
@@ -59,20 +63,16 @@ class SubjectGenerator {
 
   void generatePublic(ClassBuilder public) {
     final builder = MethodBuilder()
-    ..name = this.name
-    ..lambda = true
-    ..type = MethodType.getter
-    ..returns = this.isSink ? refer(this.sinkType) : refer(this.streamType);
-    if(this.isDirect) {
-      builder
-        ..body = Code("this._internal.$name");
-    }
-    else if (this.isSink) {
-      builder
-        ..body = Code("this._internal.$name.sink");
+      ..name = this.name
+      ..lambda = true
+      ..type = MethodType.getter
+      ..returns = this.isSink ? refer(this.sinkType) : refer(this.streamType);
+    if (this.isDirect) {
+      builder..body = Code("this._internal.$name");
+    } else if (this.isSink) {
+      builder..body = Code("this._internal.$name.sink");
     } else if (this.isStream) {
-      builder
-        ..body = Code("this._internal.$name.stream");
+      builder..body = Code("this._internal.$name.stream");
     }
 
     public.methods.add(builder.build());

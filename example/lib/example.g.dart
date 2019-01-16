@@ -9,8 +9,11 @@ part of 'example.dart';
 class _$ExampleBloc extends _ExampleBloc {
   _$ExampleBloc() : super() {
     this._countSubject = super.count;
+    this.subjects.add(this._countSubject);
     this._addSubject = super.add;
+    this.subjects.add(this._addSubject);
     this._resetSubject = super.reset;
+    this.subjects.add(this._resetSubject);
   }
 
   BehaviorSubject<int> _countSubject;

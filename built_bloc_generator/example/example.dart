@@ -1,18 +1,15 @@
 import 'package:built_bloc/built_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
-//part 'example.g.dart';
-
+/// This class would generate an `ExampleBloc` class that would
+/// exposes only a [Sink] for [add], and a [Stream] for [count].
 @bloc
-abstract class _ExampleBloc extends Bloc {
-  _ExampleBloc();
-
-  // Stream examples
-
-  // Sink examples
-
-
+class _ExampleBloc extends Bloc {
   @sink
-  void add3(int value) {
-    print("Add: $value");
-  }
+  PublishSubject<int> get add => fromPublish(onData: (int value) {
+        this.count.add(this.count.value + 1);
+      });
+
+  @stream
+  BehaviorSubject<int> get count => fromBehavior(0);
 }
