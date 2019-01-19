@@ -44,4 +44,10 @@ class ExampleBloc extends Bloc {
     super.dispose();
     this._internal.dispose();
   }
+
+  Map<String, dynamic> get metadata => {
+        "title": "ExampleBloc",
+        "sinks": {"add": add, "reset": reset},
+        "streams": {"direct": direct, "count": count},
+      };
 }

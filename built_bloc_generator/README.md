@@ -1,4 +1,4 @@
-# built_bloc
+# built_bloc_generator
 
 Generate the BLoC pattern boilerplate.
 

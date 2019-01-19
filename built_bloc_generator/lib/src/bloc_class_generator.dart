@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
-import 'package:built_bloc/built_bloc.dart';
 import 'package:built_bloc_generator/src/helpers.dart';
 import 'package:built_bloc_generator/src/subject_generator.dart';
 import 'package:code_builder/code_builder.dart';
@@ -58,12 +57,33 @@ class BlocClassGenerator {
     builder.constructors.add(constructor.build());
 
     builder.methods.add(Method((b) => b
-    ..name = "dispose"
-    ..annotations.add(CodeExpression(Code("override")))
-    ..body = Block((b) => b..statements.addAll([
-      Code("super.dispose();"),
-      Code("this._internal.dispose();")
-    ]))));
+      ..name = "dispose"
+      ..annotations.add(CodeExpression(Code("override")))
+      ..body = Block((b) => b
+        ..statements.addAll(
+            [Code("super.dispose();"), Code("this._internal.dispose();")]))));
+
+    final t ={
+      "title": "",
+    };
+
+    final metadataBody = StringBuffer();
+    metadataBody.write("{");
+    metadataBody.write('"title": "$publicName",');
+    metadataBody.write('"sinks": {');
+    metadataBody.write(this.subjects.where((s) => s.isSink).map((s) => '"${s.name}": ${s.name}').join(", "));
+    metadataBody.write('},');
+    metadataBody.write('"streams": {');
+    metadataBody.write(this.subjects.where((s) => s.isStream).map((s) => '"${s.name}": ${s.name}').join(", "));
+    metadataBody.write('},');
+    metadataBody.write("}");
+
+    builder.methods.add(Method((b) => b
+      ..name = "metadata"
+      ..returns = refer("Map<String,dynamic>")
+      ..type = MethodType.getter
+      ..lambda = true
+      ..body = Code(metadataBody.toString())));
 
     return builder.build();
   }

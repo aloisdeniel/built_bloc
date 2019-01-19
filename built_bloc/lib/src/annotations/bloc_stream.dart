@@ -5,4 +5,5 @@ class BlocStream {
   const BlocStream();
 }
 
+/// Default [BlocStream] annotation.
 const stream = BlocStream();

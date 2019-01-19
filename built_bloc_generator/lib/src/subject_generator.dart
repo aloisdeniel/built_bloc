@@ -2,6 +2,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:built_bloc/built_bloc.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:source_gen/source_gen.dart';
 import 'helpers.dart';
 
 class SubjectGenerator {
@@ -24,10 +26,8 @@ class SubjectGenerator {
   final bool isStream;
 
   SubjectGenerator(PropertyAccessorElement method, DartType argumentType,
-      {this.isSink, this.isStream})
+      {this.isSink, this.isStream, this.isDirect})
       : this.name = method.name,
-        this.isDirect = isExactlyRuntime(method.returnType, Stream) ||
-            isExactlyRuntime(method.returnType, Sink),
         this.subjectName = "_${method.name}Subject",
         this.argumentType = argumentType != null
             ? referFromAnalyzer(argumentType)
@@ -87,7 +87,19 @@ class SubjectGenerator {
         return null;
       }
 
+      final isDirect = isExactlyRuntime(m.returnType, Stream) ||
+          isExactlyRuntime(m.returnType, Sink);
+
+      if (!(isDirect || isSuperTypeRuntime(m.returnType, Subject))) {
+        throw InvalidGenerationSourceError(
+            'The properties marked with \'BlocStream\' or \'BlocSink\' annotations must be either of \'Stream\', \'Sink\' exact types, or a \'Subject\' subtype',
+            todo:
+                'Change the return type of your property to \'Stream\', \'Sink\' exact types, or a \'Subject\' subtype',
+            element: m);
+      }
+
       return SubjectGenerator(m, extractBoundType(m.returnType),
+          isDirect: isDirect,
           isStream: streamAnnotations.isNotEmpty,
           isSink: sinkAnnotations.isNotEmpty);
     });

@@ -11,7 +11,7 @@ class BlocGenerator extends GeneratorForAnnotation<BuiltBloc> {
       Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is ClassElement) {
       final name = element.name;
-    
+
       if (!element.allSupertypes.any((s) => s.name == "Bloc")) {
         throw InvalidGenerationSourceError(
             'Generator can only target classes that inherit from Bloc class.',
@@ -29,4 +29,3 @@ class BlocGenerator extends GeneratorForAnnotation<BuiltBloc> {
         element: element);
   }
 }
-
