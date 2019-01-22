@@ -1,6 +1,6 @@
 # built_bloc
 
-Helper class for adopting the BLoC pattern, alongside with a few annotations to use in combination with [built_bloc_generator](https://github.com/aloisdeniel/built_bloc/built_bloc_generator) (**which is stongly recommended**).
+Helper class for adopting the Generate the [BLoC pattern](https://medium.com/flutter-io/build-reactive-mobile-apps-in-flutter-companion-article-13950959e381), alongside with a few annotations to use in combination with [built_bloc_generator](https://github.com/aloisdeniel/built_bloc/built_bloc_generator) (**which is stongly recommended**).
 
 ## Quickstart
 

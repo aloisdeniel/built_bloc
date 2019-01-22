@@ -1,4 +1,6 @@
-# built_bloc (in active development)
+# built_bloc 
+
+###*(in active development)*
 
 Generate the BLoC pattern boilerplate.
 
@@ -80,3 +82,7 @@ class ExampleBloc extends Bloc with _ExampleBloc {
   }
 }
 ```
+
+## How to use ?
+
+See the [built_bloc_generator](https://pub.dartlang.org/packages/built_bloc_generator) package.
