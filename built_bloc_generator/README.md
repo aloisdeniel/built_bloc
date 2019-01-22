@@ -1,14 +1,14 @@
 # built_bloc_generator
 
-Generate the BLoC pattern boilerplate.
+Generate the [BLoC pattern](https://medium.com/flutter-io/build-reactive-mobile-apps-in-flutter-companion-article-13950959e381) boilerplate.
 
 ## Quickstart
 
-In order to generate your bloc, you first have to declare a private class that should extends `Bloc`, be annotated with `@bloc` and with a mixin named `_<class name>`.
+In order to generate your bloc, your class must extend `Bloc`, be annotated with `@bloc` and with a mixin named `_<class name>`.
 
-Then declare getters (annotated with `@stream` or `@sink`) that describe your subjects (from [rxdart](https://github.com/ReactiveX/rxdart)). 
+Then declare your [subject fields](https://github.com/ReactiveX/rxdart)  and annotate them with `@stream` or `@sink` to generate a public getter accordingly. 
 
-You also subscribe to a subject with the `Listen` annotation.
+You can also subscribe to a subject with the `Listen` annotation on a method.
 
 ```dart
 import 'package:rxdart/rxdart.dart';
@@ -69,11 +69,11 @@ dev_dependencies:
 
 ### Custom names
 
-To control how sink and stream properties are generated you can specify names by using `@BlocStream("custom") / @BlocSink("custom")` instead of `@stream/@sink`.
+To control how sink and stream getters are generated you can specify names by using `@BlocStream("custom") / @BlocSink("custom")` instead of `@stream/@sink`.
 
 ### Both `Sink` and `Stream`
 
-If you want that your subject export both a `Sink` and a `Stream`, you can add two annotations on you unique property.
+If you want that a subject to be both exported sa `Sink` and `Stream`, you can add two annotations on a unique property.
 
 By default, you sink will be renamed `update<name>`.
 
