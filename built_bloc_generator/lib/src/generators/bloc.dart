@@ -32,6 +32,8 @@ class BlocGenerator {
     this.streams.forEach((s) => s.buildGetter(builder));
     this.sinks.forEach((s) => s.buildGetter(builder));
 
+    builder.methods.add(this.buildMetadata());
+
     this.buildSubscription(builder);
 
     return builder.build();
@@ -54,18 +56,53 @@ class BlocGenerator {
         ..type = refer(this.element.name)))));
   }
 
+  Method buildMetadata() {
+    final metadataBody = StringBuffer();
+    metadataBody.write("{");
+    metadataBody.write('"title": "${element.name}",');
+    metadataBody.write('"sinks": {');
+    metadataBody
+        .write(this.sinks.map((s) => '"${s.name}": ${s.name}').join(", "));
+    metadataBody.write('},');
+    metadataBody.write('"streams": {');
+    metadataBody
+        .write(this.streams.map((s) => '"${s.name}": ${s.name}').join(", "));
+    metadataBody.write('},');
+    metadataBody.write("}");
+
+    return Method((b) => b
+      ..name = "metadata"
+      ..returns = refer("Map<String,dynamic>")
+      ..type = MethodType.getter
+      ..lambda = true
+      ..body = Code(metadataBody.toString()));
+  }
+
   static List<StreamGenerator> _scanForStreams(ClassElement element) {
     return element.fields
-        .map((field) => ifAnnotated<BlocStream, StreamGenerator>(field,
-            (e, a) => StreamGenerator(field: e as FieldElement, annotation: streamFromAnnotation(a))))
+        .map((field) => ifAnnotated<BlocStream, StreamGenerator>(
+            field,
+            (e, a) => StreamGenerator(
+                field: e as FieldElement, annotation: streamFromAnnotation(a))))
         .where((x) => x != null)
         .toList();
   }
 
   static List<SinkGenerator> _scanForSinks(ClassElement element) {
     return element.fields
-        .map((field) => ifAnnotated<BlocSink, SinkGenerator>(field, 
-            (e, a) => SinkGenerator(field: e as FieldElement, annotation: sinkFromAnnotation(a))))
+        .map((field) => ifAnnotated<BlocSink, SinkGenerator>(
+            field,
+            (e, a) {
+              final public = publicName(e.name,"");
+              final streamGenerator = ifAnnotated<BlocStream, StreamGenerator>(e, (ee,a) => StreamGenerator(
+                field: ee as FieldElement, annotation: streamFromAnnotation(a)));
+
+              final capitalizedPublic = public[0].toUpperCase() + public.substring(1);
+              final defaultName = streamGenerator?.name == public ? "update$capitalizedPublic" : null;
+
+              return SinkGenerator(
+                field: e as FieldElement, annotation: sinkFromAnnotation(a), defaultName: defaultName);
+            }))
         .where((x) => x != null)
         .toList();
   }
@@ -73,9 +110,10 @@ class BlocGenerator {
   static List<ListenGenerator> _scanForListens(ClassElement element) {
     return element.methods
         .map((method) => ifAnnotated<Listen, ListenGenerator>(
-            method, 
-            (e, a) =>
-                ListenGenerator(method: e as MethodElement, annotation: listenFromAnnotation(a))))
+            method,
+            (e, a) => ListenGenerator(
+                method: e as MethodElement,
+                annotation: listenFromAnnotation(a))))
         .where((x) => x != null)
         .toList();
   }

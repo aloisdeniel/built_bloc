@@ -4,7 +4,8 @@ import 'package:source_gen/source_gen.dart';
 Listen listenFromAnnotation(ConstantReader reader) {
   final obj = reader.objectValue;
   final streamName = obj.getField("streamName").toStringValue();
-  return Listen(streamName);
+  final external = obj.getField("external").toBoolValue() ?? false;
+  return Listen(streamName, external: external);
 }
 
 BlocStream streamFromAnnotation(ConstantReader reader) {

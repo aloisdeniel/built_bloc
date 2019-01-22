@@ -3,6 +3,8 @@ class Listen {
 
   final String streamName;
 
+  final bool external;
+
   /// Creates a new [Listen] instance.
-  const Listen(this.streamName);
+  const Listen(this.streamName, {this.external});
 }

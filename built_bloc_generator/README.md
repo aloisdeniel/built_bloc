@@ -67,6 +67,22 @@ dev_dependencies:
   build_runner: 
 ```
 
+### Custom names
+
+To control how sink and stream properties are generated you can specify names by using `@BlocStream("custom") / @BlocSink("custom")` instead of `@stream/@sink`.
+
+### Both `Sink` and `Stream`
+
+If you want that your subject export both a `Sink` and a `Stream`, you can add two annotations on you unique property.
+
+By default, you sink will be renamed `update<name>`.
+
+### External listen
+
+By default, all `Listen` marked subscriptions aren't added to the `subscriptions` bloc's list since they are cancelled when their subject is closed.
+
+If you want your subscription to be added to the `subscriptions` bloc list, you can set the `external` constructor parameter to `true` (`@Listen("_reset", external: true)`).
+
 ### Run the generator
 
 To run the generator, you must use `build_runner` cli:

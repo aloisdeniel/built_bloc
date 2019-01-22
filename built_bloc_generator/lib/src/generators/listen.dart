@@ -16,7 +16,13 @@ class ListenGenerator {
     final callback = this.argumentType == null
         ? "(_) => value.${method.name}()"
         : "value.${method.name}";
-    builder.statements.add(Code(
-        "value.subscriptions.add(this._parent.${annotation.streamName}.listen($callback));"));
+
+    final listen = "this._parent.${annotation.streamName}.listen($callback)";
+
+    final statement = this.annotation.external
+        ? "value.subscriptions.add($listen);"
+        : "$listen;";
+
+    builder.statements.add(Code(statement));
   }
 }

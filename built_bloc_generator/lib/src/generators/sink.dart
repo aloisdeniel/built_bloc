@@ -11,9 +11,9 @@ class SinkGenerator {
   final DartType argumentType;
   final String name;
 
-  SinkGenerator({@required this.field, @required this.annotation})
+  SinkGenerator({@required this.field, @required this.annotation, String defaultName})
       : argumentType = extractBoundType(field.type),
-        this.name = annotation.name ?? publicName(field.name, "Sink");
+        this.name = annotation.name ?? defaultName ?? publicName(field.name, "Sink");
 
   void buildGetter(ClassBuilder builder) {
     builder.methods.add(Method((b) => b

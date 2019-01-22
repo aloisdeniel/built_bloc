@@ -5,6 +5,9 @@ part 'example.g.dart';
 
 @bloc
 class ExampleBloc extends Bloc with _ExampleBloc {
+  //@BlocStream("total")
+  //@BlocSink("setTotal")
+  @sink
   @stream
   final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
 
@@ -19,7 +22,7 @@ class ExampleBloc extends Bloc with _ExampleBloc {
     this._count.add(this._count.value + value);
   }
 
-   @Listen("_reset")
+   @Listen("_reset", external: true)
   void _onReset() {
     this._count.add(0);
   }
