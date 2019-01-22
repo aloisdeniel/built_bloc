@@ -17,6 +17,7 @@ import 'package:meta/meta.dart';
 /// * [fromStream], [fromPublish], [fromSubject], [fromBehavior] are shortcuts for subscribing to
 /// streams and add it to [subscriptions] collection.
 class Bloc {
+  /// Creates a new [Bloc] instance.
   Bloc() {
     (this as GeneratedBloc)?.subscribeParent(this);
   }

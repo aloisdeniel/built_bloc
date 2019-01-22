@@ -17,7 +17,7 @@ class ExampleBloc extends Bloc with _ExampleBloc {
   @sink
   final PublishSubject<void> _reset = PublishSubject<void>();
 
-  @Listen("_add")
+  @listen
   void _onAdd(int value) {
     this._count.add(this._count.value + value);
   }
