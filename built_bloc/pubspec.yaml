@@ -9,4 +9,4 @@ environment:
 
 dependencies:
   rxdart: ^0.20.0
-  meta: ^1.1.7
+  meta: ^1.1.7 

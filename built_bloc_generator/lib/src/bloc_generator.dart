@@ -1,9 +1,10 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
+import 'package:code_builder/code_builder.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:built_bloc/built_bloc.dart';
-
-import 'bloc_class_generator.dart';
+import 'generators/bloc.dart' as gen;
 
 class BlocGenerator extends GeneratorForAnnotation<BuiltBloc> {
   @override
@@ -19,8 +20,15 @@ class BlocGenerator extends GeneratorForAnnotation<BuiltBloc> {
             element: element);
       }
 
-      final generator = BlocClassGenerator(element, annotation, buildStep);
-      return generator.generate();
+      final generator = gen.BlocGenerator(element);
+      final mixinClass = generator.buildMixin();
+
+      var library =
+          Library((b) => b..body.addAll([mixinClass])..directives.addAll([]));
+
+      var emitter = DartEmitter();
+      var source = '${library.accept(emitter)}';
+      return [DartFormatter().format(source)];
     }
 
     final name = element.name;

@@ -3,12 +3,26 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:source_gen/source_gen.dart';
 
-/// Search for an [annotation] attached to the [element].
-List<AnnotatedElement> findAnnotation(Element element, Type annotation) {
-  return TypeChecker.fromRuntime(annotation)
-      .annotationsOf(element)
-      .map((c) => AnnotatedElement(ConstantReader(c), element))
-      .toList();
+String publicName(String name, String suffixIfNotPrivate) {
+  if (name.startsWith("_")) {
+    return name.substring(1);
+  }
+  return "$name$suffixIfNotPrivate";
+}
+
+String privateName(String name, String suffixIfNotPublic) {
+  if (name.startsWith("_")) {
+    return "$name$suffixIfNotPublic";
+  }
+  return "_$name";
+}
+
+TResult ifAnnotated<TAnnotation, TResult>(Element element, TResult builder(Element e, ConstantReader annotation)) {
+  final annotations = TypeChecker.fromRuntime(TAnnotation).annotationsOf(element);
+
+  if (annotations.isEmpty) return null;
+  final annotation = ConstantReader(annotations.first);
+  return builder(element, annotation);
 }
 
 /// Get code builder reference from an analyzer [type].

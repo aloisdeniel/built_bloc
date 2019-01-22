@@ -9,31 +9,18 @@ class ExampleBloc extends Bloc {
 
   Stream<int> get count => this._add.stream;
 
-  PublishSubject<int> _add;
+  final PublishSubject<int> _add = PublishSubject<int>();
 
-  BehaviorSubject<int> _count;
+  final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
 
   ExampleBloc() {
-    this._add = addPublish(onData: _onAdd);
-    this._count = addBehavior(0);
+    this.subjects.addAll([_add, _count]);
+    this.subscriptions.addAll([ _add.listen(_onAdd) ]);
   }
 
   void _onAdd(int value) {
     this._count.add(this._count.value + 1);
   }
-}
-
-/// This example would produce the same bloc as [ExampleBloc] but
-/// is based on 'built_bloc_generator' instead.
-@bloc
-class _GeneratedExampleBloc extends Bloc {
-  @sink
-  PublishSubject<int> get add => fromPublish(onData: (int value) {
-        this.count.add(this.count.value + 1);
-      });
-
-  @stream
-  BehaviorSubject<int> get count => fromBehavior(0);
 }
 
 /// As a comparison, here would have been the class written with

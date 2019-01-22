@@ -4,7 +4,7 @@ Helper class for adopting the BLoC pattern, alongside with a few annotations to 
 
 ## Quickstart
 
-Simply extends from `Bloc` and access various helpers for registering subjects (like `addPublish`, `addBehavior`) and the `dispose` method which will close all underlying subscriptions.
+Simply extends from `Bloc` and add your `subjects` and `subscriptions`.
 
 ```dart
 class ExampleBloc extends Bloc {
@@ -12,13 +12,13 @@ class ExampleBloc extends Bloc {
 
   Stream<int> get count => this._add.stream;
 
-  PublishSubject<int> _add;
+  final PublishSubject<int> _add = PublishSubject<int>();
 
-  BehaviorSubject<int> _count;
+  final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
 
   ExampleBloc() {
-    this._add = addPublish(onData: _onAdd);
-    this._count = addBehavior(0);
+    this.subjects.addAll([_add, _count]);
+    this.subscriptions.addAll([ _add.listen(_onAdd) ]);
   }
 
   void _onAdd(int value) {

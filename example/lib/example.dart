@@ -4,22 +4,23 @@ import 'package:built_bloc/built_bloc.dart';
 part 'example.g.dart';
 
 @bloc
-abstract class _ExampleBloc extends Bloc {
-  _ExampleBloc();
-
+class ExampleBloc extends Bloc with _ExampleBloc {
   @stream
-  Stream get direct => fromStream(null);
-
-  @stream
-  BehaviorSubject<int> get count => fromBehavior(0);
+  final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
 
   @sink
-  PublishSubject<int> get add => fromPublish(onData: (value) {
-    this.count.add(this.count.value + value);
-  });
+  final PublishSubject<int> _add = PublishSubject<int>();
 
   @sink
-  PublishSubject<void> get reset => fromPublish(onData: (_) {
-    this.count.add(0);
-  });
+  final PublishSubject<void> _reset = PublishSubject<void>();
+
+  @Listen("_add")
+  void _onAdd(int value) {
+    this._count.add(this._count.value + value);
+  }
+
+   @Listen("_reset")
+  void _onReset() {
+    this._count.add(0);
+  }
 }

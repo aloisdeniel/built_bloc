@@ -11,11 +11,15 @@ Here is a simple vanilla bloc example which obviously highlights repeated patter
 ```dart
 class VanillaExampleBloc {
 
+  Sink<void> get reset => this._reset.sink;
+
   Sink<int> get add => this._add.sink;
 
   Stream<int> get count => this._add.stream;
 
   final PublishSubject<int> _add = PublishSubject<int>(sync: true);
+
+  final PublishSubject<void> _reset = PublishSubject<void>(sync: true);
 
   final BehaviorSubject<int> _count = BehaviorSubject<int>(sync: true, seedValue: 0);
 
@@ -26,15 +30,21 @@ class VanillaExampleBloc {
   VanillaExampleBloc() {
     subscriptions = [
       this._add.listen(_onAdd),
+      this._reset.listen(_onReset),
     ];
     subjects = [
       this._add,
       this._count,
+      this._reset,
     ];
   }
 
   void _onAdd(int value) {
-    this._count.add(this._count.value + 1);
+    this._onReset.add(this._count.value + value);
+  }
+
+  void _onAdd(int value) {
+    this._count.add(0);
   }
 
   @mustCallSuper
@@ -49,15 +59,24 @@ With **built_bloc**, you can replace all of that with just a few lines of code :
 
 ```dart
 @bloc
-class _GeneratedExampleBloc extends Bloc {
-  @sink
-  PublishSubject<int> get add => fromPublish(onData: this._onAdd);
-
+class ExampleBloc extends Bloc with _ExampleBloc {
   @stream
-  BehaviorSubject<int> get count => fromBehavior(0);
+  final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
 
+  @sink
+  final PublishSubject<int> _add = PublishSubject<int>();
+
+  @sink
+  final PublishSubject<void> _reset = PublishSubject<void>();
+
+  @Listen("_add")
   void _onAdd(int value) {
-    this._count.add(this._count.value + 1);
+    this._count.add(this._count.value + value);
+  }
+
+  @Listen("_reset")
+  void _onReset() {
+    this._count.add(0);
   }
 }
 ```
