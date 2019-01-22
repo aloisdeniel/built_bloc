@@ -15,13 +15,13 @@ class VanillaExampleBloc {
 
   Sink<int> get add => this._add.sink;
 
-  Stream<int> get count => this._add.stream;
+  Stream<int> get count => this._count.stream;
 
-  final PublishSubject<int> _add = PublishSubject<int>(sync: true);
+  final PublishSubject<int> _add = PublishSubject<int>();
 
-  final PublishSubject<void> _reset = PublishSubject<void>(sync: true);
+  final PublishSubject<void> _reset = PublishSubject<void>();
 
-  final BehaviorSubject<int> _count = BehaviorSubject<int>(sync: true, seedValue: 0);
+  final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
 
   List<StreamSubscription> subscriptions;
 
@@ -40,7 +40,7 @@ class VanillaExampleBloc {
   }
 
   void _onAdd(int value) {
-    this._onReset.add(this._count.value + value);
+    this._count.add(this._count.value + value);
   }
 
   void _onAdd(int value) {
