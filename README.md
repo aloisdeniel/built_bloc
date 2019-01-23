@@ -1,6 +1,6 @@
 # built_bloc 
 
-###*(in active development)*
+### *(in active development)*
 
 Generate the BLoC pattern boilerplate.
 
