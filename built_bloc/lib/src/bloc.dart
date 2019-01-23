@@ -32,8 +32,12 @@ class Bloc {
 
   /// Cancel all the underlying [subscriptions] and close all [subjects].
   @mustCallSuper
-  void dispose() {
-    this.subscriptions.forEach((s) => s.cancel());
-    this.subjects.forEach((s) => s.close());
+  Future<void> dispose() async {
+    if(this.subscriptions.isNotEmpty) {
+      await Future.wait(this.subscriptions.map((s) => s.cancel()));
+    }
+    if(this.subjects.isNotEmpty) {
+      await Future.wait(this.subjects.map((s) => s.close()));
+    }
   }
 }
