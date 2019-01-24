@@ -7,10 +7,8 @@ part 'example.g.dart';
 class ExampleBloc extends Bloc with _ExampleBloc {
 
   ExampleBloc() {
-    this.subscriptions.addAll([
-      _add.map((v) => _count.value + v).listen(_count.add),
-      //_reset.mapTo(0).listen(_count.add);
-    ]);
+    _add.map((v) => _count.value + v).listen(_count.add);
+    //_reset.mapTo(0).listen(_count.add);
   }
 
   //@BlocStream("total")
@@ -23,9 +21,9 @@ class ExampleBloc extends Bloc with _ExampleBloc {
   final PublishSubject<int> _add = PublishSubject<int>();
 
   @sink
+  @Bind("_onReset")
   final PublishSubject<void> _reset = PublishSubject<void>();
 
-   @Listen("_reset", external: true)
   void _onReset() {
     this._count.add(0);
   }

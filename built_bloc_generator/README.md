@@ -8,7 +8,7 @@ In order to generate your bloc, your class must extend `Bloc`, be annotated with
 
 Then declare your [subject fields](https://github.com/ReactiveX/rxdart)  and annotate them with `@stream` or `@sink` to generate a public getter accordingly. 
 
-You can also subscribe to a subject with the `Listen` annotation on a method.
+You can also subscribe to a subject with the `Bind` annotation.
 
 ```dart
 import 'package:rxdart/rxdart.dart';
@@ -22,17 +22,17 @@ class ExampleBloc extends Bloc with _ExampleBloc {
   final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
 
   @sink
+  @Bind("_onAdd")
   final PublishSubject<int> _add = PublishSubject<int>();
 
   @sink
+  @Bind("_onReset")
   final PublishSubject<void> _reset = PublishSubject<void>();
 
-  @Listen("_add")
   void _onAdd(int value) {
     this._count.add(this._count.value + value);
   }
 
-  @Listen("_reset")
   void _onReset() {
     this._count.add(0);
   }
@@ -76,12 +76,6 @@ To control how sink and stream getters are generated you can specify names by us
 If you want that a subject to be both exported sa `Sink` and `Stream`, you can add two annotations on a unique property.
 
 By default, you sink will be renamed `update<name>`.
-
-### External listen
-
-By default, all `Listen` marked subscriptions aren't added to the `subscriptions` bloc's list since they are cancelled when their subject is closed.
-
-If you want your subscription to be added to the `subscriptions` bloc list, you can set the `external` constructor parameter to `true` (`@Listen("_reset", external: true)`).
 
 ### Run the generator
 

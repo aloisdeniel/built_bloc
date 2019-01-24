@@ -1,0 +1,66 @@
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
+import 'package:built_bloc/built_bloc.dart';
+import 'package:built_bloc_generator/src/helpers.dart';
+import 'package:code_builder/code_builder.dart';
+import 'package:meta/meta.dart';
+import 'package:source_gen/source_gen.dart';
+
+class BindGenerator {
+  final FieldElement field;
+  final MethodElement method;
+  final Bind annotation;
+  final DartType argumentType;
+  BindGenerator(
+      {@required ClassElement blocClass, @required this.field, @required this.annotation})
+      : this.argumentType = extractBoundType(field.type),
+        this.method = _findListenMethod(blocClass, field, annotation.methodName,
+            extractBoundType(field.type));
+
+  static MethodElement _findListenMethod(ClassElement blocClass,
+      FieldElement field, String name, DartType argumentType) {
+    final method = blocClass.methods.firstWhere((m) => m.name == name,
+        orElse: () => throw InvalidGenerationSourceError(
+            'No method found with name `$name` on class `${blocClass.name}`',
+            todo:
+                'Add a method`void $name(${argumentType.name} value)` on class `${blocClass.name}',
+            element: field));
+
+    final argumentIsVoid = (argumentType.isVoid || argumentType == null);
+    final isMethodValid = (argumentIsVoid && method.parameters.length == 0) || (!argumentIsVoid && method.parameters.length == 1 && method.parameters.first.type == argumentType);
+    if (!isMethodValid) {
+      throw InvalidGenerationSourceError(
+          'The method `$name` has invalid parameters ${argumentType.name} / ${method.parameters.length}.',
+          todo:
+              'Declare the method as `void $name(${argumentType.name} value)`',
+          element: method);
+    }
+
+    return method;
+  }
+
+  void buildSubscription(BlockBuilder builder) {
+    var streamName = field.name;
+
+    /// We call `listen` directly on [field] only if it is a stream, else we 
+    /// consider that the type must have a `.stream` property.
+    final checker = TypeChecker.fromRuntime(Stream);
+    if (!checker.isAssignableFromType(this.field.type)) {
+      streamName += ".stream";
+    }
+
+    streamName = "this._parent.${streamName}";
+
+    final callback = this.argumentType == null || this.argumentType.isVoid
+        ? "(_) => value.${method.name}()"
+        : "value.${method.name}";
+
+    final listen = "${streamName}.listen($callback)";
+
+    final statement = this.annotation.external
+        ? "value.subscriptions.add($listen);"
+        : "$listen;";
+
+    builder.statements.add(Code(statement));
+  }
+}

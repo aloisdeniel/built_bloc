@@ -9,17 +9,17 @@ class ExampleBloc extends Bloc with _ExampleBloc {
   final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
 
   @sink
+  @Bind("_onAdd")
   final PublishSubject<int> _add = PublishSubject<int>();
 
   @sink
+  @Bind("_onReset")
   final PublishSubject<void> _reset = PublishSubject<void>();
 
-  @Listen("_add")
   void _onAdd(int value) {
     this._count.add(this._count.value + value);
   }
 
-   @Listen("_reset")
   void _onReset() {
     this._count.add(0);
   }

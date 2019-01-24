@@ -5,16 +5,16 @@ import 'package:built_bloc_generator/src/helpers.dart';
 import 'package:code_builder/code_builder.dart';
 import 'stream.dart';
 import 'sink.dart';
-import 'listen.dart';
+import 'bind.dart';
 
 class BlocGenerator {
   final ClassElement element;
   final List<StreamGenerator> streams;
   final List<SinkGenerator> sinks;
-  final List<ListenGenerator> listens;
+  final List<BindGenerator> listens;
 
   BlocGenerator(this.element)
-      : this.listens = _scanForListens(element),
+      : this.listens = _scanForBinds(element),
         this.streams = _scanForStreams(element),
         this.sinks = _scanForSinks(element);
 
@@ -107,13 +107,14 @@ class BlocGenerator {
         .toList();
   }
 
-  static List<ListenGenerator> _scanForListens(ClassElement element) {
-    return element.methods
-        .map((method) => ifAnnotated<Listen, ListenGenerator>(
+  static List<BindGenerator> _scanForBinds(ClassElement element) {
+    return element.fields
+        .map((method) => ifAnnotated<Bind, BindGenerator>(
             method,
-            (e, a) => ListenGenerator(
-                method: e as MethodElement,
-                annotation: listenFromAnnotation(a))))
+            (e, a) => BindGenerator(
+                blocClass: element,
+                field: e as FieldElement,
+                annotation: bindFromAnnotation(a))))
         .where((x) => x != null)
         .toList();
   }

@@ -5,4 +5,4 @@ export 'src/mixins/bloc_mixin.dart';
 export 'src/annotations/built_bloc.dart';
 export 'src/annotations/bloc_stream.dart';
 export 'src/annotations/bloc_sink.dart';
-export 'src/annotations/listen.dart';
+export 'src/annotations/bind.dart';

@@ -25,7 +25,6 @@ class _ExampleBloc implements GeneratedBloc<ExampleBloc> {
     value.subjects.add(value._count);
     value.subjects.add(value._add);
     value.subjects.add(value._reset);
-    value.subscriptions
-        .add(this._parent._reset.listen((_) => value._onReset()));
+    this._parent._reset.listen((_) => value._onReset());
   }
 }

@@ -11,4 +11,4 @@ dependencies:
 dev_dependencies:
   build_runner: ^1.0.0
   built_bloc_generator:
-    path: ../built_bloc_generator
+    path: ../built_bloc_generator  
