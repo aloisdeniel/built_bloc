@@ -1,13 +1,14 @@
 import 'package:built_bloc/built_bloc.dart';
 import 'package:flutter/widgets.dart';
 
+typedef Widget BlocWidgetBuilder<T extends Bloc>(BuildContext context, T bloc);
+
 /// A widget that hosts a [Bloc].
-/// 
+///
 /// It gives access to the [bloc] to all its descendent widgets.
-/// 
+///
 /// This provider will also dispose the bloc when the widget is disposed.
 class BlocProvider<T extends Bloc> extends StatefulWidget {
-
   /// The provided bloc.
   final T bloc;
 
@@ -15,12 +16,19 @@ class BlocProvider<T extends Bloc> extends StatefulWidget {
   /// the [of] method.
   final Widget child;
 
+  /// The child can be built using a [builder] instead of giving a [child] instance.
+  ///
+  /// This can be useful if you want to get a scoped context.
+  final BlocWidgetBuilder<T> builder;
+
   /// Creates a widget that gives acces to a [bloc] to all its descendent widgets.
   const BlocProvider({
     Key key,
     @required this.bloc,
-    @required this.child,
-  }) : super(key: key);
+    this.child,
+    this.builder,
+  })  : assert(child != null || builder != null),
+        super(key: key);
 
   /// The [Bloc] from the closest [BlocProvider] instance that encloses the given
   /// context.
@@ -46,7 +54,7 @@ class _BlocProviderState<T extends Bloc> extends State<BlocProvider<T>> {
   Widget build(BuildContext context) {
     return _InheritedBlocProvider<T>(
       bloc: this.widget.bloc,
-      child: widget.child,
+      child: widget?.child ?? Builder(builder: (c) => this.widget.builder(c, this.widget.bloc)),
     );
   }
 }
