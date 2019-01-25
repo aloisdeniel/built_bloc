@@ -11,14 +11,25 @@ void main() async {
     content = content.substring(0, content.indexOf("dependency_overrides:"));
     return updateDependency(content, "built_bloc", version);
   });
+  await updatePubspec("flutter_built_bloc", (content) {
+    content = updateVersion(content, version);
+    content = content.substring(0, content.indexOf("dependency_overrides:"));
+    return updateDependency(content, "built_bloc", version);
+  });
 
   print('Confirm publish ? (y/n)');
   if (stdin.readLineSync().trim() == 'y') {
     await publish("built_bloc");
     await publish("built_bloc_generator");
+    await publish("flutter_built_bloc");
   }
 
   await updatePubspec("built_bloc_generator", (content) {
+    return content +
+        "dependency_overrides:\n  built_bloc:\n    path: ../built_bloc";
+  });
+
+  await updatePubspec("flutter_built_bloc", (content) {
     return content +
         "dependency_overrides:\n  built_bloc:\n    path: ../built_bloc";
   });

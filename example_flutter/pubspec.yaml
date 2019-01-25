@@ -15,7 +15,8 @@ environment:
 dependencies:
   example:
     path: ../example
-  flutter:
+  flutter_built_bloc: ^0.2.7-dev
+  flutter: 
     sdk: flutter 
 
   # The following adds the Cupertino Icons font to your application.
@@ -25,6 +26,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  flutter_built_bloc:
+    path: ../flutter_built_bloc
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

@@ -1,31 +1,18 @@
 import 'package:example/example.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_built_bloc/flutter_built_bloc.dart';
 
-class ExampleView extends StatefulWidget {
+class Example extends StatelessWidget {
   @override
-  ExampleViewState createState() {
-    return ExampleViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider(bloc: ExampleBloc(), child: ExampleView());
   }
 }
 
-class ExampleViewState extends State<ExampleView> {
-  ExampleBloc _bloc;
-
-  @override
-  void initState() {
-    this._bloc = ExampleBloc();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    this._bloc.dispose();
-    this._bloc = null;
-  }
-
+class ExampleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<ExampleBloc>(context);
     return SafeArea(
       top: false,
       child: Column(
@@ -34,7 +21,7 @@ class ExampleViewState extends State<ExampleView> {
             Expanded(
                 child: Center(
                     child: StreamBuilder<int>(
-                        stream: this._bloc.count,
+                        stream: bloc.count,
                         builder: (c, s) =>
                             Text(s.hasData ? s.data.toString() : "empty")))),
             Row(
@@ -42,20 +29,20 @@ class ExampleViewState extends State<ExampleView> {
                 Expanded(
                   child: RaisedButton(
                     child: Text("-1"),
-                    onPressed: () => this._bloc.add.add(-1),
+                    onPressed: () => bloc.add.add(-1),
                   ),
                 ),
                 Expanded(
                   child: RaisedButton(
                     child: Text("+1"),
-                    onPressed: () => this._bloc.add.add(1),
+                    onPressed: () => bloc.add.add(1),
                   ),
                 ),
               ],
             ),
             RaisedButton(
               child: Text("Reset"),
-              onPressed: () => this._bloc.reset.add(null),
+              onPressed: () => bloc.reset.add(null),
             ),
           ]),
     );
