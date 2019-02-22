@@ -5,7 +5,7 @@ environment:
   sdk: '>=2.0.0 <3.0.0'
 
 dependencies:
-  built_bloc: ^0.2.7-dev
+  built_bloc: ^0.3.0
 
 dev_dependencies:
   build_runner: ^1.0.0

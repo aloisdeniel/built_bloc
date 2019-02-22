@@ -15,7 +15,7 @@ environment:
 dependencies:
   example:
     path: ../example
-  flutter_built_bloc: ^0.2.7-dev
+  flutter_built_bloc: ^0.3.0
   flutter: 
     sdk: flutter 
 
@@ -25,7 +25,7 @@ dependencies:
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter
+    sdk: flutter 
 
 dependency_overrides:
   flutter_built_bloc:

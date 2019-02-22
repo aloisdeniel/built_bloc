@@ -1,7 +1,7 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:built_bloc/built_bloc.dart';
 
-part 'example.g.dart';
+part 'bloc.g.dart';
 
 @bloc
 class ExampleBloc extends Bloc with _ExampleBloc {
