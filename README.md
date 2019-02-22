@@ -1,7 +1,5 @@
 # built_bloc 
 
-### *(in active development)*
-
 Generate the BLoC pattern boilerplate.
 
 ## Why ?
