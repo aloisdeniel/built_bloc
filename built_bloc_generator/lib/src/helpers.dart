@@ -17,8 +17,10 @@ String privateName(String name, String suffixIfNotPublic) {
   return "_$name";
 }
 
-TResult ifAnnotated<TAnnotation, TResult>(Element element, TResult builder(Element e, ConstantReader annotation)) {
-  final annotations = TypeChecker.fromRuntime(TAnnotation).annotationsOf(element);
+TResult ifAnnotated<TAnnotation, TResult>(
+    Element element, TResult builder(Element e, ConstantReader annotation)) {
+  final annotations =
+      TypeChecker.fromRuntime(TAnnotation).annotationsOf(element);
 
   if (annotations.isEmpty) return null;
   final annotation = ConstantReader(annotations.first);
@@ -30,16 +32,27 @@ Reference referFromAnalyzer(DartType type) {
   return refer(type.name, type.element?.librarySource?.uri?.toString());
 }
 
-/// Extract a parameterized type from a [type].
-DartType extractBoundType(DartType type) {
+/// Extract a parameterized type from a field's [type].
+String extractBoundTypeName(FieldElement field) {
   DartType bound = null;
 
-  if (type is ParameterizedType) {
-    if (type.typeArguments.isNotEmpty) {
-      bound = type.typeArguments.first;
+  if (field.type is ParameterizedType) {
+    final arguments = (field.type as ParameterizedType).typeArguments;
+    if (arguments.isNotEmpty) {
+      bound = arguments.first;
+    }
+
+    if (bound != null && bound.isUndefined) {
+      final source = field.computeNode();
+      print("source:" + source.toSource());
     }
   }
-  return bound;
+
+  if (bound == null || bound.isVoid) {
+    return "void";
+  }
+
+  return bound.name;
 }
 
 bool isExactlyRuntime(DartType t, Type runtimeType) {

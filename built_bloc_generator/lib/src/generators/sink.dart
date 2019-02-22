@@ -8,18 +8,18 @@ import 'package:meta/meta.dart';
 class SinkGenerator {
   final FieldElement field;
   final BlocSink annotation;
-  final DartType argumentType;
+  final String argumentType;
   final String name;
 
   SinkGenerator({@required this.field, @required this.annotation, String defaultName})
-      : argumentType = extractBoundType(field.type),
+      : argumentType = extractBoundTypeName(field),
         this.name = annotation.name ?? defaultName ?? publicName(field.name, "Sink");
 
   void buildGetter(ClassBuilder builder) {
     builder.methods.add(Method((b) => b
       ..name = this.name
       ..type = MethodType.getter
-      ..returns = refer("Sink<${this.argumentType?.name ?? "void"}>")
+      ..returns = refer("Sink<${this.argumentType}>")
       ..lambda = true
       ..body = Code("this._parent.${field.name}.sink")));
   }

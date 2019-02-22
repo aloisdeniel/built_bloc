@@ -5,7 +5,8 @@ import 'package:flutter_built_bloc/flutter_built_bloc.dart';
 class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(bloc: ExampleBloc(), child: ExampleView());
+    return BlocProvider(
+        blocBuilder: (c) => ExampleBloc(), child: ExampleView());
   }
 }
 

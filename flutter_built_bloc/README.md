@@ -10,7 +10,7 @@ Create a `BlocProvider` and give him your `Bloc`.
 class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(bloc: ExampleBloc(), child: ExampleView());
+    return BlocProvider(blocBuilder:(c) => ExampleBloc(), child: ExampleView());
   }
 }
 ```
@@ -26,6 +26,10 @@ class ExampleView extends StatelessWidget {
   }
 }
 ```
+
+## Note
+
+Under the hood, the [provider](https://github.com/rrousselGit/provider) package is used, so you have access to all its APIs.
 
 
 ## How to use

@@ -10,29 +10,29 @@ class BindGenerator {
   final FieldElement field;
   final MethodElement method;
   final Bind annotation;
-  final DartType argumentType;
+  final String argumentType;
   BindGenerator(
       {@required ClassElement blocClass, @required this.field, @required this.annotation})
-      : this.argumentType = extractBoundType(field.type),
+      : this.argumentType = extractBoundTypeName(field),
         this.method = _findListenMethod(blocClass, field, annotation.methodName,
-            extractBoundType(field.type));
+            extractBoundTypeName(field));
 
   static MethodElement _findListenMethod(ClassElement blocClass,
-      FieldElement field, String name, DartType argumentType) {
+      FieldElement field, String name, String argumentType) {
     final method = blocClass.methods.firstWhere((m) => m.name == name,
         orElse: () => throw InvalidGenerationSourceError(
             'No method found with name `$name` on class `${blocClass.name}`',
             todo:
-                'Add a method`void $name(${argumentType.name} value)` on class `${blocClass.name}',
+                'Add a method`void $name(${argumentType} value)` on class `${blocClass.name}',
             element: field));
 
-    final argumentIsVoid = (argumentType.isVoid || argumentType == null);
+    final argumentIsVoid = (argumentType == "void" || argumentType == null);
     final isMethodValid = (argumentIsVoid && method.parameters.length == 0) || (!argumentIsVoid && method.parameters.length == 1 && method.parameters.first.type == argumentType);
     if (!isMethodValid) {
       throw InvalidGenerationSourceError(
-          'The method `$name` has invalid parameters ${argumentType.name} / ${method.parameters.length}.',
+          'The method `$name` has invalid parameters ${argumentType} / ${method.parameters.length}.',
           todo:
-              'Declare the method as `void $name(${argumentType.name} value)`',
+              'Declare the method as `void $name(${argumentType} value)`',
           element: method);
     }
 
@@ -51,7 +51,7 @@ class BindGenerator {
 
     streamName = "this._parent.${streamName}";
 
-    final callback = this.argumentType == null || this.argumentType.isVoid
+    final callback = this.argumentType == null || this.argumentType == "void"
         ? "(_) => value.${method.name}()"
         : "value.${method.name}";
 

@@ -18,7 +18,7 @@ class ExampleBloc extends Bloc with _ExampleBloc {
   final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
 
   @sink
-  final PublishSubject<int> _add = PublishSubject<int>();
+  final _add = PublishSubject<int>();
 
   @sink
   @Bind("_onReset")

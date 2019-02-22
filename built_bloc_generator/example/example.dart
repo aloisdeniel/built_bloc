@@ -10,7 +10,7 @@ class ExampleBloc extends Bloc with _ExampleBloc {
 
   @sink
   @Bind("_onAdd")
-  final PublishSubject<int> _add = PublishSubject<int>();
+  final PublishSubject<int> _add = PublishSubject<int>(); 
 
   @sink
   @Bind("_onReset")

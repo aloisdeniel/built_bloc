@@ -8,18 +8,18 @@ import 'package:meta/meta.dart';
 class StreamGenerator {
   final FieldElement field;
   final BlocStream annotation;
-  final DartType argumentType;
+  final String argumentType;
   final String name;
 
   StreamGenerator({@required this.field, @required this.annotation})
-      : argumentType = extractBoundType(field.type),
+      : argumentType = extractBoundTypeName(field),
         this.name = annotation.name ?? publicName(field.name, "Stream");
 
   void buildGetter(ClassBuilder builder) {
     builder.methods.add(Method((b) => b
       ..name = this.name
       ..type = MethodType.getter
-      ..returns = refer("Stream<${this.argumentType?.name ?? "void"}>")
+      ..returns = refer("Stream<${this.argumentType}>")
       ..lambda = true
       ..body = Code("_parent.${field.name}.stream")));
   }
