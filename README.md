@@ -45,7 +45,7 @@ class VanillaExampleBloc {
     this._count.add(this._count.value + value);
   }
 
-  void _onAdd(int value) {
+  void _onReset(int value) {
     this._count.add(0);
   }
 
