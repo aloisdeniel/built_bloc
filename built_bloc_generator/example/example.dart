@@ -15,7 +15,7 @@ class ExampleBloc extends Bloc with _ExampleBloc {
   //@BlocSink("setTotal")
   @sink
   @stream
-  final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
+  final BehaviorSubject<int> _count = BehaviorSubject<int>.seeded(0);
 
   @sink
   final _add = PublishSubject<int>();

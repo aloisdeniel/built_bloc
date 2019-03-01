@@ -21,7 +21,7 @@ class VanillaExampleBloc {
 
   final PublishSubject<void> _reset = PublishSubject<void>();
 
-  final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
+  final BehaviorSubject<int> _count = BehaviorSubject<int>.seeded(0);
 
   List<StreamSubscription> subscriptions;
 

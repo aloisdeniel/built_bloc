@@ -14,7 +14,7 @@ class ExampleBloc extends Bloc {
 
   final PublishSubject<int> _add = PublishSubject<int>();
 
-  final BehaviorSubject<int> _count = BehaviorSubject<int>(seedValue: 0);
+  final BehaviorSubject<int> _count = BehaviorSubject<int>.seeded(0);
 
   ExampleBloc() {
     this.subjects.addAll([_add, _count]);
