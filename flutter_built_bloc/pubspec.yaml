@@ -1,5 +1,5 @@
 name: flutter_built_bloc
-version: 0.3.2
+version: 0.3.4
 author: Aloïs Deniel <alois.deniel@outlook.com>
 description: Generates the BLoC boilerplate.
 homepage: https://github.com/aloisdeniel/built_bloc
@@ -8,7 +8,7 @@ environment:
   sdk: '>=2.0.0-dev <3.0.0' 
  
 dependencies:
-  built_bloc: ^0.3.2
+  built_bloc: ^0.3.4
   provider: ^1.6.1  
   flutter: 
     sdk: flutter 

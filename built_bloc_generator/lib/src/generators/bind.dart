@@ -26,16 +26,6 @@ class BindGenerator {
                 'Add a method`void $name(${argumentType} value)` on class `${blocClass.name}',
             element: field));
 
-    final argumentIsVoid = (argumentType == "void" || argumentType == null);
-    final isMethodValid = (argumentIsVoid && method.parameters.length == 0) || (!argumentIsVoid && method.parameters.length == 1 && method.parameters.first.type == argumentType);
-    if (!isMethodValid) {
-      throw InvalidGenerationSourceError(
-          'The method `$name` has invalid parameters ${argumentType} / ${method.parameters.length}.',
-          todo:
-              'Declare the method as `void $name(${argumentType} value)`',
-          element: method);
-    }
-
     return method;
   }
 

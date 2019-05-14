@@ -1,1 +1,9 @@
 name: example
+
+environment:
+  sdk: '>=2.0.0 <3.0.0'
+
+dev_dependencies:
+  built_bloc_generator: 
+    path: ../
+  build_runner: 

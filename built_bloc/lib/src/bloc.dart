@@ -19,7 +19,9 @@ import 'package:meta/meta.dart';
 class Bloc {
   /// Creates a new [Bloc] instance.
   Bloc() {
-    (this as GeneratedBloc)?.subscribeParent(this);
+    if(this is GeneratedBloc) {
+      (this as GeneratedBloc).subscribeParent(this);
+    }
   }
 
   /// Add a [StreamSubscription] to this collection and it will

@@ -1,1 +1,6 @@
 name: example
+dependencies:
+  flutter_built_bloc:
+    path: ../
+  flutter:
+    sdk: flutter
