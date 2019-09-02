@@ -5,7 +5,8 @@ Bind bindFromAnnotation(ConstantReader reader) {
   final obj = reader.objectValue;
   final methodName = obj.getField("methodName").toStringValue();
   final external = obj.getField("external").toBoolValue() ?? false;
-  return Bind(methodName, external: external);
+  final swallowErrors = obj.getField("swallowErrors").toBoolValue() ?? true;
+  return Bind(methodName, external: external, swallowErrors: swallowErrors);
 }
 
 BlocStream streamFromAnnotation(ConstantReader reader) {

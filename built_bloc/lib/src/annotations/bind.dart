@@ -6,6 +6,9 @@ class Bind {
   /// If set to `true`, add the [StreamSubscription] to the bloc's `subscriptions`.
   final bool external;
 
+  /// If set to `false`, errors will be propagated to main FlutterError.
+  final bool swallowErrors;
+
   /// Creates a new [Listen] instance.
-  const Bind(this.methodName, {this.external});
+  const Bind(this.methodName, {this.external = false, this.swallowErrors = true});
 }
