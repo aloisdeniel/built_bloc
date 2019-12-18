@@ -10,7 +10,7 @@ typedef T BlocBuilder<T extends Bloc>(BuildContext context);
 /// It gives access to the [bloc] to all its descendent widgets.
 ///
 /// This provider will also dispose the bloc when the widget is disposed.
-class BlocProvider<T extends Bloc> extends StatefulProvider<T> {
+class BlocProvider<T extends Bloc> extends Provider<T> {
   /// Creates a widget that gives acces to a [bloc] to all its descendent widgets.
   BlocProvider({
     Key key,
@@ -19,8 +19,8 @@ class BlocProvider<T extends Bloc> extends StatefulProvider<T> {
   })  : assert(blocBuilder != null),
         super(
             key: key,
-            valueBuilder: blocBuilder,
-            onDispose: (context, bloc) => bloc.dispose(),
+            create: blocBuilder,
+            dispose: (context, bloc) => bloc.dispose(),
             child: child);
 
   /// The [Bloc] from the closest [BlocProvider] instance that encloses the given
