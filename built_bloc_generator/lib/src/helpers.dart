@@ -41,11 +41,6 @@ String extractBoundTypeName(FieldElement field) {
     if (arguments.isNotEmpty) {
       bound = arguments.first;
     }
-
-    if (bound != null && bound.isUndefined) {
-      final source = field.computeNode();
-      print("source:" + source.toSource());
-    }
   }
 
   if (bound == null || bound.isVoid) {
