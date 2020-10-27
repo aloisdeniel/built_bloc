@@ -15,7 +15,7 @@ class ExampleBloc extends Bloc {
 
   ExampleBloc() {
     this.subjects.addAll([_add, _count]);
-    this.subscriptions.addAll([ _add.listen(_onAdd) ]);
+    this.subscriptions.addAll([_add.listen(_onAdd)]);
   }
 
   void _onAdd(int value) {
@@ -26,14 +26,14 @@ class ExampleBloc extends Bloc {
 /// As a comparison, here would have been the class written with
 /// pure vanilla code.
 class VanillaExampleBloc {
-
   Sink<int> get add => this._add.sink;
 
   Stream<int> get count => this._add.stream;
 
   final PublishSubject<int> _add = PublishSubject<int>(sync: true);
 
-  final BehaviorSubject<int> _count = BehaviorSubject<int>.seeded(0, sync: true);
+  final BehaviorSubject<int> _count =
+      BehaviorSubject<int>.seeded(0, sync: true);
 
   List<StreamSubscription> subscriptions;
 

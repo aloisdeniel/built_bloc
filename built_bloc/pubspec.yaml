@@ -1,12 +1,11 @@
 name: built_bloc
-version: 0.4.1
-author: Aloïs Deniel <alois.deniel@outlook.com>
+version: 0.4.2
 description: Generates the BLoC boilerplate.
 homepage: https://github.com/aloisdeniel/built_bloc
 
 environment:
-  sdk: '>=2.5.0 <3.0.0'
+  sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
-  rxdart: ^0.23.0
-  meta: ^1.1.6
+  rxdart: ">=0.24.0 < 1.0.0"
+  meta: ^1.1.8
