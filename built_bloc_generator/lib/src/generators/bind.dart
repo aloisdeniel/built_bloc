@@ -45,7 +45,9 @@ class BindGenerator {
         ? "(_) => value.${method.name}()"
         : "value.${method.name}";
 
-    final listen = "${streamName}.listen($callback)";
+    final errorManagement = annotation.swallowErrors ? ', onError: (_) {}' : '';
+
+    final listen = "${streamName}.listen($callback$errorManagement)";
 
     final statement = this.annotation.external
         ? "value.subscriptions.add($listen);"
